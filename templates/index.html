@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Penny - Your Money Friend!</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      padding: 20px 0 16px;
+      color: white;
+    }
+    header h1 { font-size: 2.4rem; font-weight: 800; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+    header p { font-size: 1rem; opacity: 0.9; margin-top: 6px; }
+    .penny-avatar {
+      font-size: 4rem;
+      animation: bounce 2s infinite;
+      display: block;
+      margin-bottom: 8px;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    #chat-container {
+      width: 100%;
+      max-width: 700px;
+      background: white;
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    #messages {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 420px;
+      overflow-y: auto;
+      padding: 4px;
+    }
+    .message {
+      padding: 12px 16px;
+      border-radius: 18px;
+      max-width: 85%;
+      line-height: 1.6;
+      font-size: 0.95rem;
+      font-weight: 600;
+      animation: popIn 0.2s ease;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .user {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+    .bot {
+      background: #f0f4ff;
+      color: #333;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+      border: 2px solid #e0e7ff;
+    }
+    .typing {
+      background: #f0f4ff;
+      color: #888;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+      font-style: italic;
+      border: 2px solid #e0e7ff;
+    }
+    .suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .suggestion-btn {
+      background: #f0f4ff;
+      color: #667eea;
+      border: 2px solid #c7d2fe;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      transition: all 0.2s;
+    }
+    .suggestion-btn:hover {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+      transform: scale(1.05);
+    }
+    #input-area {
+      display: flex;
+      gap: 10px;
+    }
+    #user-input {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: 14px;
+      border: 2px solid #c7d2fe;
+      font-size: 0.95rem;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 600;
+      outline: none;
+      color: #333;
+    }
+    #user-input:focus { border-color: #667eea; }
+    button {
+      padding: 12px 18px;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      transition: transform 0.1s;
+    }
+    button:active { transform: scale(0.95); }
+    #send-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+    }
+    #reset-btn { background: #f0f4ff; color: #667eea; }
+    .disclaimer {
+      font-size: 0.72rem;
+      color: #aaa;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="penny-avatar">🪙</span>
+    <h1>Penny 💬</h1>
+    <p>Your fun money friend — ask me anything!</p>
+  </header>
+
+  <div id="chat-container">
+    <div id="messages">
+      <div class="message bot">
+        Hey hey hey! 👋 I'm Penny, your money bestie! 🪙✨<br><br>
+        I can teach you about saving, investing, stocks, and how to make your money grow — all in a fun way! 🚀<br><br>
+        What's on your mind? Ask me anything or just say hi! 😄
+      </div>
+    </div>
+
+    <div class="suggestions">
+      <button class="suggestion-btn" onclick="sendSuggestion('What is money and why is it important?')">💵 What is money?</button>
+      <button class="suggestion-btn" onclick="sendSuggestion('How do I save money as a kid?')">🐷 How to save?</button>
+      <button class="suggestion-btn" onclick="sendSuggestion('What is the stock market in simple words?')">📈 Stock market?</button>
+      <button class="suggestion-btn" onclick="sendSuggestion('How can I make my money grow?')">🌱 Grow my money</button>
+      <button class="suggestion-btn" onclick="sendSuggestion('Tell me a fun money fact!')">🎉 Fun money fact!</button>
+    </div>
+
+    <div id="input-area">
+      <input id="user-input" type="text" placeholder="Type something fun... 😄" onkeydown="if(event.key==='Enter') sendMessage()" />
+      <button id="send-btn" onclick="sendMessage()">Send 🚀</button>
+      <button id="reset-btn" onclick="resetChat()">Reset 🔄</button>
+    </div>
+    <p class="disclaimer">⚠️ Penny is here to teach, not give real financial advice. Always talk to a grown-up about money decisions!</p>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById("user-input");
+      const msg = input.value.trim();
+      if (!msg) return;
+      input.value = "";
+      appendMessage(msg, "user");
+      const typing = appendMessage("Penny is thinking... 🤔✨", "typing");
+
+      try {
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: msg })
+        });
+        const data = await res.json();
+        typing.remove();
+        appendMessage(data.reply || data.error, "bot");
+      } catch (e) {
+        typing.remove();
+        appendMessage("Oops! Something went wrong. Try again! 😅", "bot");
+      }
+    }
+
+    function sendSuggestion(text) {
+      document.getElementById("user-input").value = text;
+      sendMessage();
+    }
+
+    function appendMessage(text, className) {
+      const messages = document.getElementById("messages");
+      const div = document.createElement("div");
+      div.className = "message " + className;
+      div.textContent = text;
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+      return div;
+    }
+
+    async function resetChat() {
+      await fetch("/reset", { method: "POST" });
+      const messages = document.getElementById("messages");
+      messages.innerHTML = '<div class="message bot">Fresh start! 🌟 What do you want to learn about money today?</div>';
+    }
+  </script>
+</body>
+</html>
