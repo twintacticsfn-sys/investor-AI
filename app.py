@@ -3,7 +3,9 @@ from flask import Flask, render_template, request, jsonify
 from openai import OpenAI
 
 app = Flask(__name__)
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+
+def get_client():
+    return OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 SYSTEM_PROMPT = """You are Penny, a fun and friendly AI money coach for kids and beginners!
 You use simple words, emojis, and fun examples to explain money and investing.
@@ -39,6 +41,7 @@ def chat():
     conversation_history.append({"role": "user", "content": user_message})
 
     try:
+        client = get_client()
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[{"role": "system", "content": SYSTEM_PROMPT}] + conversation_history,
